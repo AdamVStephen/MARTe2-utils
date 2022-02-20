@@ -1,0 +1,6 @@
+[submodule "MARTe2"]
+	path = MARTe2
+	url = https://github.com/aneto0/MARTe2.git
+[submodule "MARTe2-components"]
+	path = MARTe2-components
+	url = https://github.com/aneto0/MARTe2-components.git
