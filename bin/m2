@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+#
+# MARTe2 startup utility
+#
+# Issues
+#
+# TODO  Provide a usage() option.
+# WIBNI Provide some bash autocompletion help.
+# WIBNI Add more powerful ways to assist with valid state/message options.
+#
+#
+SCRIPT="$0"
+SCRIPT_DIR=$(dirname $(realpath "$SCRIPT"))
+SETENV_SCRIPT_PATH="$SCRIPT_DIR/setenv.sh"
+
+if [ -f "$SETENV_SCRIPT_PATH" ]
+then
+	source "$SETENV_SCRIPT_PATH"
+else
+	echo "$SETENV_SCRIPT_PATH not found.  Bailing out"
+	exit 54
+fi
+
+export WD=${MARTe2_Demos_Sigtools_DIR}/Startup
+export CFG_DIR=${MARTe2_Demos_Sigtools_DIR}/Configurations
+
+# If there is no argument, defaults are invoke for the most recent .cfg file and 
+# start with -s Run
+
+if [ $# -eq 0 ]
+then
+    export CONFIG=$(realpath $(ls -1rt ${CFG_DIR}/*.cfg | tail -1))
+    echo "Start MARTe2 with all default settings for most recent cfg file : $CONFIG"
+else
+    if [ -f ${CFG_DIR}/$1 ]
+    then
+	export CONFIG=$(realpath ${CFG_DIR}/$1)
+    else
+	echo "$1 not found in ${CFG_DIR} available .cfg files are"
+	ls -1rt ${CFG_DIR}/*.cfg | while read f; do echo $(basename $f); done
+	exit 1
+    fi
+    shift
+fi
+
+if [ $# -eq 0 ]
+then
+    export INITIAL_STATE="Idle"
+    export INITIAL_STATE="Error"
+    export INITIAL_STATE="Run"
+    export GO_FLAG="-s"
+    export GO_ARG="${INITIAL_STATE}"
+else
+    export GOFLAG="$1"
+    shift
+    export GOARG="$1"
+    shift
+fi
+
+#echo "Running in ${WD} : ./Main.sh -l RealTimeLoader -f "${CONFIG}" -s ${INITIAL_STATE}"
+#cd ${WD} && ./Main.sh -l RealTimeLoader -f "${CONFIG}" -s ${INITIAL_STATE}
+
+export EPICS_IOC_DB=${CFG_DIR}/EPICSv3-demo.db
+echo "Start ancillary softIoc using default database $EPICS_IOC_DB"
+nohup softIoc -d "$EPICS_IOC_DB" > /var/tmp/softIoc.$BASHPID.stdout 2> /var/tmp/softIoc.$BASHPID.stderr & 
+
+echo Running in ${WD} : ./Main.sh -l RealTimeLoader -f "${CONFIG}" "${GOFLAG}" "${GOARG}"
+#cd ${WD} && ./Main.sh -l RealTimeLoader -f "${CONFIG}" -s ${INITIAL_STATE}
+cd ${WD} && ./Main.sh -l RealTimeLoader -f "${CONFIG}" "${GOFLAG}" "${GOARG}"

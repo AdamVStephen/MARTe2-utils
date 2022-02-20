@@ -1,0 +1,9 @@
+[submodule "MARTe2"]
+	path = MARTe2
+	url = https://github.com/aneto0/MARTe2.git
+[submodule "MARTe2-components"]
+	path = MARTe2-components
+	url = https://github.com/aneto0/MARTe2-components.git
+[submodule "MARTe2-demos-sigtools"]
+	path = MARTe2-demos-sigtools
+	url = https://github.com/AdamVStephen/MARTe2-demos-sigtools

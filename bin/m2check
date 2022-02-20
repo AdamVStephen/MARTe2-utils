@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+#
+# MARTe2 startup utility : use less to inspect MARTe2 configuration files.
+#
+# Issues
+#
+# TODO  Provide a usage() option.
+# WIBNI Provide some bash autocompletion help.
+# WIBNI Add more powerful ways to assist with valid state/message options.
+
+SCRIPT="$0"
+SCRIPT_DIR=$(dirname $(realpath "$SCRIPT"))
+SETENV_SCRIPT_PATH="$SCRIPT_DIR/setenv.sh"
+
+if [ -f "$SETENV_SCRIPT_PATH" ]
+then
+	source "$SETENV_SCRIPT_PATH"
+else
+	echo "$SETENV_SCRIPT_PATH not found.  Bailing out"
+	exit 54
+fi
+
+export WD=${MARTe2_Demos_Sigtools_DIR}/Startup
+export CFG_DIR=${MARTe2_Demos_Sigtools_DIR}/Configurations
+
+# If there is no argument, defaults are invoke for the most recent .cfg file and 
+# start with -s Run
+
+if [ $# -eq 0 ]
+then
+    export CONFIG=$(realpath $(ls -1rt ${CFG_DIR}/*.cfg | tail -1))
+    echo "Start MARTe2 with all default settings for most recent cfg file : $CONFIG"
+else
+    if [ -f ${CFG_DIR}/$1 ]
+    then
+	export CONFIG=$(realpath ${CFG_DIR}/$1)
+    else
+	echo "$1 not found in ${CFG_DIR} available .cfg files are"
+	ls -1rt ${CFG_DIR}/*.cfg | while read f; do echo $(basename $f); done
+	exit 1
+    fi
+    shift
+fi
+
+
+CFG=$(basename $CONFIG)
+
+checks()
+{
+	for path in "$(grep Filename ${CONFIG} | grep -v "\/\/" | awk '{print $3}' | sed -e 's/"//g')"
+	do
+		dir="$(dirname $path)"
+		if [ ! -d "${dir}" ]
+		then
+			echo "Fault: $CFG attempts to open file in non-existent folder ${dir}"
+			exit 54
+		fi
+	done
+	}
+
+	checks

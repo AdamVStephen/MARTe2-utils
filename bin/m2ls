@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# Concept : an ncurses style dashboard, in the style of Andre Magnetics Solution.
+#
+# Resources and inspirations (this is quite popular recently)
+#
+# github.com/nat/ghtop (using the Will McGugan rich library)
+
+minimal() {
+watch -n 2 ls -l /var/tmp/STapp-0004-1-signals.csv
+}

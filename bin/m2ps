@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+#
+# Concept : an ncurses style dashboard, in the style of Andre Magnetics Solution.
+#
+# Resources and inspirations (this is quite popular recently)
+#
+# github.com/nat/ghtop (using the Will McGugan rich library)
+
+minimal() {
+watch -n 2 ls -l /var/tmp/STapp-0004-1-signals.csv
+}
+
+m2_processes() {
+declare M2PROCS=("$(pgrep -o -a MARTeApp.ex)")
+if [[ "xx" == "x${M2PROCS[@]}x" ]]
+then
+echo "No MARTeApp.ex processes found"
+exit 0
+else
+nprocs=${#M2PROCS[@]}
+fi
+for (( i=0; i<${nprocs}; i++ ));
+do
+#echo "process: $(expr $i + 1)"
+proc_args=(${M2PROCS[$i]})
+pid=${proc_args[0]}
+bdir=$(dirname ${proc_args[1]})
+ldr=${proc_args[3]}
+cdir=$(dirname ${proc_args[5]})
+cname=$(basename ${proc_args[5]})
+mode=${proc_args[6]}
+mode_args=${proc_args[7]}
+printf "%-20s : %s\n"  "MARTe2 pid" "$pid"
+printf "%-20s : %s\n"  "Binary directory" "$bdir"
+printf "%-20s : %s\n"  "Config directory" "$cdir"
+printf "%-20s : %s\n"  "Config file" "$cname"
+if [[ "$mode" == "-s" ]]
+then 
+runmode="Initial State"
+else
+runmode="Initial Message"
+fi
+printf "%-20s : %s\n"  "$runmode" "$mode_args"
+vartmp_files=$(lsof -p $pid 2>/dev/null | grep var | awk '{print $9}')
+for f in $vartmp_files
+do
+printf "%-20s : %s\n" "Open file" "$f"
+done
+done
+echo
+# Check for webserver component
+http_servers=$(lsof -p $pid 2>/dev/null | grep TCP | awk '{print $9}')
+for port in $http_servers
+do
+printf "%-20s : %s\n" "TCP port" "$port"
+done
+}
+
+epics_processes() {
+echo
+pgrep -o -a softIoc
+}
+
+m2_processes
+epics_processes
