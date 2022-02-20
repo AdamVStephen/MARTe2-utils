@@ -41,7 +41,7 @@ source "${SCRIPT_DIR}/utils.sh"
 # Look up tables of known good combinations of branches and OS versions
 #
 
-export DEFAULT_CORE_SHA="1.5.4"
+export DEFAULT_CORE_SHA="v1.5.4"
 
 declare -A core_branch=( 
 	["centos7_was"]="99c7d76af4" 
@@ -51,7 +51,7 @@ declare -A core_branch=(
 	["ubuntu20.04"]="" 
 )
 
-export DEFAULT_COMPONENTS_SHA="1.4.1"
+export DEFAULT_COMPONENTS_SHA="v1.4.1"
 
 declare -A components_branch=( 
 	["centos7_was"]="00a08ac"  
