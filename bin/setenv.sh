@@ -41,7 +41,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MARTe2_DIR/Build/x86-linux/Core/:$EPICS
 
 # EPICS Environment : tune per machine
 # Broadcast address of the specifc network
-export EPICS_CA_ADDR_LIST=10.208.19.255
+export EPICS_CA_ADDR_LIST=127.0.0.255
 export EPICS_CA_AUTO_ADDR_LIST=NO
 
 #export MDSPLUS_DIR=/usr/local/mdsplus
