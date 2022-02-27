@@ -61,5 +61,10 @@ echo
 pgrep -o -a softIoc
 }
 
+tmux_sessions() {
+	echo
+	tmux -L MARTe2-utils list-sessions
+}
+
 m2_processes
 epics_processes

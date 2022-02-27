@@ -21,8 +21,9 @@ else
 	exit 54
 fi
 
-export WD=${MARTe2_Demos_Sigtools_DIR}/Startup
-export CFG_DIR=${MARTe2_Demos_Sigtools_DIR}/Configurations
+# It is assumed the utils base will be referenced by MARTe2_ACTIVE_PROJECT
+export WD=${MARTe2_ACTIVE_PROJECT}/Startup
+export CFG_DIR=${MARTe2_ACTIVE_PROJECT}/Configurations
 
 # If there is no argument, defaults are invoke for the most recent .cfg file and 
 # start with -s Run
@@ -56,13 +57,6 @@ else
     export GOARG="$1"
     shift
 fi
-
-#echo "Running in ${WD} : ./Main.sh -l RealTimeLoader -f "${CONFIG}" -s ${INITIAL_STATE}"
-#cd ${WD} && ./Main.sh -l RealTimeLoader -f "${CONFIG}" -s ${INITIAL_STATE}
-
-export EPICS_IOC_DB=${CFG_DIR}/EPICSv3-demo.db
-echo "Start ancillary softIoc using default database $EPICS_IOC_DB"
-nohup softIoc -d "$EPICS_IOC_DB" > /var/tmp/softIoc.$BASHPID.stdout 2> /var/tmp/softIoc.$BASHPID.stderr & 
 
 echo Running in ${WD} : ./Main.sh -l RealTimeLoader -f "${CONFIG}" "${GOFLAG}" "${GOARG}"
 #cd ${WD} && ./Main.sh -l RealTimeLoader -f "${CONFIG}" -s ${INITIAL_STATE}

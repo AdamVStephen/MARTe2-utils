@@ -20,8 +20,8 @@ else
 	exit 54
 fi
 
-export WD=${MARTe2_Demos_Sigtools_DIR}/Startup
-export CFG_DIR=${MARTe2_Demos_Sigtools_DIR}/Configurations
+export WD=${MARTe2_ACTIVE_PROJECT}/Startup
+export CFG_DIR=${MARTe2_ACTIVE_PROJECT}/Configurations
 
 # If there is no argument, defaults are invoke for the most recent .cfg file and 
 # start with -s Run

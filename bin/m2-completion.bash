@@ -7,16 +7,8 @@
 # REF : https://stackoverflow.com/questions/57426500/list-directories-at-a-specific-path-as-autocomplete-options-for-a-bash-script
 # The following stackoverflow answer falls down on the underscore functions not being recognised : TO FIX
 
-_configs_x()
-{
-	local current;
-	local base=${MARTe2_CONFIG_PATH}
-	_get_comp_words_by_ref current;
-	current="${base}"/$current
-	_filedir
-	COMPREPLY=("${COMPREPLY[@]#$base}")
-}
-#
+export MARTe2_CONFIG_PATH=${MARTe2_ACTIVE_PROJECT}/Configurations
+
 _configs()
 {
 	local cfgs cur
@@ -25,8 +17,19 @@ _configs()
 	COMPREPLY=( $(compgen -W "$cfgs" -- ${cur}) )
 	return 0
 }
-#} && complete -o nospace -F _configs m2} && complete -o nospace -F _configs m2
 
 complete -F _configs m2
 complete -F _configs m2less
 complete -F _configs m2check
+
+_epicsdbs()
+{
+	local dbs cur
+	dbs=$(ls -1 ${MARTe2_CONFIG_PATH}/*.db| while read f; do echo $(basename $f); done)
+	cur=${COMP_WORDS[COMP_CWORD]}
+	COMPREPLY=( $(compgen -W "$dbs" -- ${cur}) )
+	return 0
+}
+#} && complete -o nospace -F _configs m2} && complete -o nospace -F _configs m2
+
+complete -F _epicsdbs m2ioc

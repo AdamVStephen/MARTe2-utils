@@ -1,6 +1,6 @@
 locality : image description
 ayr : MARTe2 1.5.4 MARTe2-components 1.4.1 Initial release.
-barrhead
+barrhead : Updated with improved m2 scripts of more general use.  Assumes MARTe2_ACTIVE_PROJECT cue.
 bathgate
 bearsden
 bellshill
