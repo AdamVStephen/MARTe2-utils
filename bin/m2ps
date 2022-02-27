@@ -15,7 +15,7 @@ declare M2PROCS=("$(pgrep -o -a MARTeApp.ex)")
 if [[ "xx" == "x${M2PROCS[@]}x" ]]
 then
 echo "No MARTeApp.ex processes found"
-exit 0
+return
 else
 nprocs=${#M2PROCS[@]}
 fi
@@ -68,3 +68,4 @@ tmux_sessions() {
 
 m2_processes
 epics_processes
+tmux_sessions
