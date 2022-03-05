@@ -30,3 +30,6 @@ The MARTe software framework is a C++ modular and multi-platform framework for t
 - [Source-code](https://vcis-gitlab.f4e.europa.eu/aneto/MARTe2)
 - [Integration](https://vcis-jenkins.f4e.europa.eu/job/MARTe2)
 
+## Releases
+
+- 2022-03-05 v1.0.0 merged from barrhead
