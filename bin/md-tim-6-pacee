@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+rm -f ../MARTe2-demos-sigtools/temp/*.csv
+start_time=$(date --rfc-3339='ns')
+./m2 STapp-0010-Timing-6-pacee.cfg -s Run > /tmp/log 2>&1 &
+echo "MARTe started at $start_time"
+echo "Waiting for 10 seconds"
+sleep 10 && pkill MARTe
+echo "Last modification to the log was"
+stat -c %y /tmp/log
+echo "Last modification to the csv was"
+stat -c %y ../MARTe2-demos-sigtools/temp/*.csv
+echo "Contents of the csv file"
+#cat ../MARTe2-demos-sigtools/temp/*.csv
+echo
+ts=$(wc -l ../MARTe2-demos-sigtools/temp/*.csv)
+echo "Timestamps in 1 second : $ts"

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+start_time=$(date --rfc-3339='ns')
+./m2 STapp-0010-Timing-6-pacer.cfg -s Run > /tmp/log 2>&1 &
+echo "MARTe started at $start_time"
+echo "Waiting for 60 seconds"
+sleep 60 && pkill MARTe
+echo "Last modification to the log was"
+stat -c %y /tmp/log

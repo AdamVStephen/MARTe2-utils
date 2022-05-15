@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+[ $# -eq 2 ] || { echo "Must supply run time duration and frequency arguments" ; exit; }
+run_duration_seconds=$1
+frequency=$2
+rm -f ../MARTe2-demos-sigtools/temp/*.csv
+start_time=$(date --rfc-3339='ns')
+./m2 STapp-0010-Timing-7-pacee.cfg -s Run > /tmp/md-tim-7-pacee.log 2>&1 &
+echo "MARTe pacee started at $start_time logging to /tmp/md-tim-7-pacee.log"
+./md-tim-7-pacer $frequency
+sleep $run_duration_seconds && pkill MARTe
+echo "Last modification to the logs was"
+stat -c %y /tmp/md-tim-7-*.log
+echo "Last modification to the csv was"
+stat -c %y ../MARTe2-demos-sigtools/temp/*.csv
+echo "Contents of the csv file"
+#cat ../MARTe2-demos-sigtools/temp/*.csv
+echo
+ts=$(wc -l ../MARTe2-demos-sigtools/temp/*.csv)
+echo "Timestamps in 1 second : $ts"
+#

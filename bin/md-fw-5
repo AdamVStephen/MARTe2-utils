@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+rm -f ../MARTe2-demos-sigtools/temp/*.csv
+start_time=$(date --rfc-3339='ns')
+echo "IF ON DOCKER: Check EPICS_CA_ADDR_LIST uses 127.0.0.255"
+echo "Start a tmux session with IOC for example 5"
+./m2ioc STapp-0007-FileWriter-5-IOC.db
+./m2 STapp-0007-FileWriter-5.cfg -m StateMachine:START > /tmp/log 2>&1 &
+sleep 5
+./m2ps
+watch -n 1 cat ../MARTe2-demos-sigtools/temp/*.csv

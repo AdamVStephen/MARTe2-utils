@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+[ $# -eq 1 ] || { echo "Must supply run time frequency argument" ; exit; }
+frequency=$1
+PACER_CFG=STapp-0010-Timing-7-pacer-$frequency-Hz.cfg
+cd $MARTe2_CONFIG_PATH
+sed -e "s/Frequency = 10/Frequency = $frequency/" STapp-0010-Timing-7-pacer.cfg > "$PACER_CFG"
+cd -
+start_time=$(date --rfc-3339='ns')
+./m2 "$PACER_CFG" -s Run > /tmp/pacer-7.log 2>&1 &
+echo "MARTe started at $start_time"

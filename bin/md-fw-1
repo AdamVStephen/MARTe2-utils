@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+rm -f ../MARTe2-demos-sigtools/temp/*.csv
+start_time=$(date --rfc-3339='ns')
+./m2 STapp-0007-FileWriter-1.cfg -s Run > /tmp/log 2>&1 &
+echo "MARTe started at $start_time"
+echo "Waiting for 15 seconds"
+sleep 15 && pkill MARTe
+echo "Last modification to the log was"
+stat -c %y /tmp/log
+echo "Last modification to the csv was"
+stat -c %y ../MARTe2-demos-sigtools/temp/*.csv
+echo "Contents of the csv file"
+cat ../MARTe2-demos-sigtools/temp/*.csv
+echo "Timestamps should run from 990000 to 1005000"

@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#
+# MARTe2 utility script to invoke EDITOR on a .cfg or .db file
+#
+# Status
+#
+# 2022-03-05 Designed to interoperate with https://github.com/AdamVStephen/MARTe2-utils
+#
+# Issues
+#
+
+SCRIPT="$0"
+SCRIPT_DIR=$(dirname $(realpath "$SCRIPT"))
+SETENV_SCRIPT_PATH="$SCRIPT_DIR/setenv.sh"
+
+if [ -f "$SETENV_SCRIPT_PATH" ]
+then
+	source "$SETENV_SCRIPT_PATH"
+else
+	echo "$SETENV_SCRIPT_PATH not found.  Bailing out"
+	exit 54
+fi
+
+export WD=${MARTe2_ACTIVE_PROJECT}/Startup
+export CFG_DIR=${MARTe2_ACTIVE_PROJECT}/Configurations
+export EDITOR=${EDITOR:-/usr/bin/vim}
+
+# If there is no argument, defaults are invoke for the most recent .cfg file and 
+# start with -s Run
+
+if [ $# -eq 0 ]
+then
+    export CONFIG=$(realpath $(ls -1rt ${CFG_DIR}/*.cfg | tail -1))
+    echo "Start MARTe2 with all default settings for most recent cfg file : $CONFIG"
+else
+    if [ -f ${CFG_DIR}/$1 ]
+    then
+	export CONFIG=$(realpath ${CFG_DIR}/$1)
+    else
+	echo "$1 not found in ${CFG_DIR} available .cfg files are"
+	ls -1rt ${CFG_DIR}/*.cfg | while read f; do echo $(basename $f); done
+	exit 1
+    fi
+    shift
+fi
+
+${EDITOR} ${CONFIG}

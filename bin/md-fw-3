@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+rm -f ../MARTe2-demos-sigtools/temp/*.csv
+start_time=$(date --rfc-3339='ns')
+./m2 STapp-0007-FileWriter-3.cfg -s Run > /tmp/log 2>&1 &
+watch -n 1 cat ../MARTe2-demos-sigtools/temp/*.csv
