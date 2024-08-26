@@ -15,6 +15,7 @@ SETENV_SCRIPT_PATH="$SCRIPT_DIR/setenv.sh"
 
 if [ -f "$SETENV_SCRIPT_PATH" ]
 then
+	echo -e "m2 from \n\tSCRIPT_DIR=${SCRIPT_DIR} \n\tsourcing ${SETENV_SCRIPT_PATH}"
 	source "$SETENV_SCRIPT_PATH"
 else
 	echo "$SETENV_SCRIPT_PATH not found.  Bailing out"
@@ -58,6 +59,8 @@ else
     shift
 fi
 
+echo "Main.sh from ${WD}"
+echo "MARTe2_DIR is ${MARTe2_DIR}"
 echo Running in ${WD} : ./Main.sh -l RealTimeLoader -f "${CONFIG}" "${GOFLAG}" "${GOARG}"
 #cd ${WD} && ./Main.sh -l RealTimeLoader -f "${CONFIG}" -s ${INITIAL_STATE}
 cd ${WD} && ./Main.sh -l RealTimeLoader -f "${CONFIG}" "${GOFLAG}" "${GOARG}"

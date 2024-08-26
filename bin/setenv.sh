@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-#
+# vim: set ft=bash:
 # Set environment variables for the project.  Referenced from other install and run scripts.
 #
 # 2022-01-22 passes shellcheck linting OK.
 # 2022-01-22 : bashtip : surround shell expansion strings in double quotes : shellcheck
 # 2022-01-22 : bashtip : use || exit after a cd attempt in case the directory is not found : shellcheck
+# 2024-08-24 : add guards to preserve provided MARTe2_DIR and MARTe2_Components_DIR if defined.
 # TODO: use the following to avoid any absolute path reference assumptions : install wherever cloned to.
 #set -x
 
@@ -20,9 +21,26 @@ export MARTe2_PROJECT_ROOT=${INSTALLATION_DIR}/MARTe2-utils
 export MARTe2_Utils_Dependencies_Installed_File=${MARTe2_PROJECT_ROOT}/marte2-utils.deps.installed
 export MARTe2_Utils_Repos_Installed_File=${MARTe2_PROJECT_ROOT}/marte2-utils.repos.installed
 
-export MARTe2_DIR=${MARTe2_PROJECT_ROOT}/MARTe2-dev
-export MARTe2_Components_DIR=${MARTe2_PROJECT_ROOT}/MARTe2-components
-
+if [ -z ${MARTe2_DIR+x} ]
+then 
+	echo "MARTe2_DIR environment variable is not set"
+	echo "Set relative to $MARTe2_PROJECT_ROOT"
+	export MARTe2_DIR=${MARTe2_PROJECT_ROOT}/MARTe2-dev
+	echo "MARTe2_DIR is ${MARTe2_DIR}"
+else
+	echo "Preserving MARTe2_DIR environment variable "
+	echo "MARTe2_DIR is ${MARTe2_DIR}"
+fi
+if [ -z ${MARTe2_Components_DIR+x} ]
+then 
+	echo "MARTe2_Components_DIR environment variable is not set"
+	echo "Set relative to $MARTe2_PROJECT_ROOT"
+	export MARTe2_Components_DIR=${MARTe2_PROJECT_ROOT}/MARTe2-components
+	echo "MARTe2_Components_DIR is ${MARTe2_Components_DIR}"
+else
+	echo "Preserving MARTe2_Components_DIR environment variable "
+	echo "MARTe2_Components_DIR is ${MARTe2_Components_DIR}"
+fi
 # Avoid building the OPCUADataSource by suppressing the next two lines
 # https://github.com/AdamVStephen/MARTe2-utils/blob/issues/issues/%230001_MARTe2-components_build/OPCUAClient.md
 #export OPEN62541_LIB=${MARTe2_PROJECT_ROOT}/Projects/open62541/build/bin
