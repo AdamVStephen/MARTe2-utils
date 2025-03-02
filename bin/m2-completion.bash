@@ -21,6 +21,8 @@ _configs()
 complete -F _configs m2
 complete -F _configs m2less
 complete -F _configs m2check
+complete -F _configs m2edit
+complete -F _configs m2db
 
 _epicsdbs()
 {
@@ -33,3 +35,14 @@ _epicsdbs()
 #} && complete -o nospace -F _configs m2} && complete -o nospace -F _configs m2
 
 complete -F _epicsdbs m2ioc
+
+# Tacking on an extra function to give cd like semantics
+#function m2cd() {
+#	export MARTe2_ACTIVE_PROJECT_LAST=$MARTe2_ACTIVE_PROJECT
+#        export MARTe2_ACTIVE_PROJECT="$PWD"
+#}
+
+
+
+
+
