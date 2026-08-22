@@ -10,7 +10,7 @@
 
 SCRIPT="$0"
 #SCRIPT_DIR=$(dirname $(realpath "$SCRIPT"))
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #SETENV_SCRIPT_PATH="$SCRIPT_DIR/setenv.sh"
 
 source "${SCRIPT_DIR}/m2lib"
