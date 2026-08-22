@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Functions shared across the m2 script suite
+export CFG_DIR=${MARTe2_ACTIVE_PROJECT}/Configurations
+
+# If there is no argument, defaults are invoke for the most recent .cfg file and
+# start with -s Run
+
+find_config() {
+	local cfg="$1"
+	local result=""
+	
+	if [ x"$cfg" == "x"]
+	then
+		result=$(realpath $(find "${CFG_DIR}" -type f -name "*.cfg" | tail -1))
+		echo "$result"
+	else
+		if [ $(find "${CFG_DIR}" -type f -name "$cfg" -printf x) == "x" ]
+		then
+			result=$(realpath $(find "${CFG_DIR}" -type f -name "$cfg"))
+			echo "$result"
+		else
+			#echo "$1 not found in ${CFG_DIR} available .cfg files are"
+			#find "${CFG_DIR}" -type f -name "*.cfg" | while read f; do echo $(basename "$f"); done
+			echo "$result"
+			return 0	
+		fi
+		shift
+	fi
+
+}
