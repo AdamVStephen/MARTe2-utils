@@ -44,4 +44,4 @@ config=$(find_config "$1")
 #    shift
 #fi
 
-less ${CONFIG}
+less ${config}
