@@ -11,16 +11,19 @@
 #
 SCRIPT="$0"
 SCRIPT_DIR=$(dirname $(realpath "$SCRIPT"))
-SETENV_SCRIPT_PATH="$SCRIPT_DIR/setenv.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/m2lib"
 
-if [ -f "$SETENV_SCRIPT_PATH" ]
-then
-	echo -e "m2 from \n\tSCRIPT_DIR=${SCRIPT_DIR} \n\tsourcing ${SETENV_SCRIPT_PATH}"
-	source "$SETENV_SCRIPT_PATH"
-else
-	echo "$SETENV_SCRIPT_PATH not found.  Bailing out"
-	exit 54
-fi
+#SETENV_SCRIPT_PATH="$SCRIPT_DIR/setenv.sh"
+#
+#if [ -f "$SETENV_SCRIPT_PATH" ]
+#then
+#	echo -e "m2 from \n\tSCRIPT_DIR=${SCRIPT_DIR} \n\tsourcing ${SETENV_SCRIPT_PATH}"
+#	source "$SETENV_SCRIPT_PATH"
+#else
+#	echo "$SETENV_SCRIPT_PATH not found.  Bailing out"
+#	exit 54
+#fi
 
 # It is assumed the utils base will be referenced by MARTe2_ACTIVE_PROJECT
 export WD=${MARTe2_ACTIVE_PROJECT}/Startup
@@ -28,22 +31,22 @@ export CFG_DIR=${MARTe2_ACTIVE_PROJECT}/Configurations
 
 # If there is no argument, defaults are invoke for the most recent .cfg file and 
 # start with -s Run
-
-if [ $# -eq 0 ]
-then
-    export CONFIG=$(realpath $(ls -1rt ${CFG_DIR}/*.cfg | tail -1))
-    echo "Start MARTe2 with all default settings for most recent cfg file : $CONFIG"
-else
-    if [ -f ${CFG_DIR}/$1 ]
-    then
-	export CONFIG=$(realpath ${CFG_DIR}/$1)
-    else
-	echo "$1 not found in ${CFG_DIR} available .cfg files are"
-	ls -1rt ${CFG_DIR}/*.cfg | while read f; do echo $(basename $f); done
-	exit 1
-    fi
-    shift
-fi
+CONFIG=$(find_config "$1")
+#if [ $# -eq 0 ]
+#then
+#    export CONFIG=$(realpath $(ls -1rt ${CFG_DIR}/*.cfg | tail -1))
+#    echo "Start MARTe2 with all default settings for most recent cfg file : $CONFIG"
+#else
+#    if [ -f ${CFG_DIR}/$1 ]
+#    then
+#	export CONFIG=$(realpath ${CFG_DIR}/$1)
+#    else
+#	echo "$1 not found in ${CFG_DIR} available .cfg files are"
+#	ls -1rt ${CFG_DIR}/*.cfg | while read f; do echo $(basename $f); done
+#	exit 1
+#    fi
+#    shift
+#fi
 
 if [ $# -eq 0 ]
 then
