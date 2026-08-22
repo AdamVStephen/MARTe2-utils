@@ -12,7 +12,7 @@ export MARTe2_CONFIG_PATH=${MARTe2_ACTIVE_PROJECT}/Configurations
 _configs()
 {
 	local cfgs cur
-	cfgs=$(ls -1 ${MARTe2_CONFIG_PATH}/*.cfg | while read f; do echo $(basename $f); done)
+	cfgs=$(find ${MARTe2_CONFIG_PATH} -type f -name "*.cfg" | while read f; do echo $(basename $f); done)
 	cur=${COMP_WORDS[COMP_CWORD]}
 	COMPREPLY=( $(compgen -W "$cfgs" -- ${cur}) )
 	return 0
