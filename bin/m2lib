@@ -10,7 +10,7 @@ find_config() {
 	local cfg="$1"
 	local result=""
 	
-	if [ x"$cfg" == "x"]
+	if [ x"$cfg" == "x" ]
 	then
 		result=$(realpath $(find "${CFG_DIR}" -type f -name "*.cfg" | tail -1))
 		echo "$result"
@@ -28,4 +28,23 @@ find_config() {
 		shift
 	fi
 
+}
+
+
+find_realtime_states() {
+    local file="$1"
+
+    awk '
+        /^[[:space:]]*Class[[:space:]]*=[[:space:]]*RealTimeState[[:space:]]*$/ {
+            if (prev ~ /^[[:space:]]*\+[[:alnum:]]+ /) {
+                line = prev
+                sub(/^[[:space:]]*\+/, "", line)
+                sub(/ .*/, "", line)
+                print line
+            }
+        }
+        {
+            prev = $0
+        }
+    ' "$file"
 }
