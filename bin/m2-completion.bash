@@ -88,7 +88,7 @@ _better_m2_completion() {
     esac
 }
 
-_best_m2run_completion() {
+_best_m2_completion() {
     local cur prev cfg
     COMPREPLY=()
 
