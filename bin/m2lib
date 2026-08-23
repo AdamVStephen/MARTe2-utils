@@ -6,7 +6,7 @@ export CFG_DIR=${MARTe2_ACTIVE_PROJECT}/Configurations
 # If there is no argument, defaults are invoke for the most recent .cfg file and
 # start with -s Run
 
-find_config() {
+_find_config() {
 	local cfg="$1"
 	local result=""
 	
@@ -31,7 +31,7 @@ find_config() {
 }
 
 
-find_realtime_states() {
+_find_realtime_states() {
     local file="$1"
 
     awk '
@@ -47,4 +47,10 @@ find_realtime_states() {
             prev = $0
         }
     ' "$file"
+}
+
+_find_messages() {
+    local file="$1"
+
+    print "Not implemented yet"
 }

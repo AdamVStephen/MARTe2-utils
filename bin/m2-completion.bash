@@ -7,25 +7,132 @@
 # REF : https://stackoverflow.com/questions/57426500/list-directories-at-a-specific-path-as-autocomplete-options-for-a-bash-script
 # The following stackoverflow answer falls down on the underscore functions not being recognised : TO FIX
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+#SETENV_SCRIPT_PATH="$SCRIPT_DIR/setenv.sh"
+source "${SCRIPT_DIR}/m2lib"
+
 export MARTe2_CONFIG_PATH=${MARTe2_ACTIVE_PROJECT}/Configurations
 
 _configs()
 {
 	local cfgs cur
-	cfgs=$(find ${MARTe2_CONFIG_PATH} -type f -name "*.cfg" | while read f; do echo $(basename $f); done)
-	cur=${COMP_WORDS[COMP_CWORD]}
-	COMPREPLY=( $(compgen -W "$cfgs" -- ${cur}) )
+	# Better Shell Scripts Tip
+	# Manual composition
+	# cfgs=$(find ${MARTe2_CONFIG_PATH} -type f -name "*.cfg" | while read f; do echo $(basename $f); done)
+	# cur=${COMP_WORDS[COMP_CWORD]}
+	# COMPREPLY=( $(compgen -W "$cfgs" -- ${cur}) )
+	#
+	# ChatGPT is more elegant
+        COMPREPLY=(
+            $(compgen -W "$(find ${MARTe2_CONFIG_PATH} -type f -name '*.cfg')" -- "$cur")
+        )
 	return 0
 }
 
-for utility in m2 m2check m2db m2edit m2grep m2ioc m2less m2ls m2ps m2states
+for utility in m2check m2db m2edit m2grep m2ioc m2less m2ls m2ps m2states
 do
 	complete -F _configs "${utility}"
 done
-#complete -F _configs m2less
-#complete -F _configs m2check
-#complete -F _configs m2edit
-#complete -F _configs m2db
+
+# Dynamic bash completion to help selection from available RealTimeStates
+
+_basic_m2_completion() {
+    local cur prev cfg
+    COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    # First argument: complete .cfg files
+    if (( COMP_CWORD == 1 )); then
+        COMPREPLY=(
+            $(compgen -W "$(find ${MARTe2_CONFIG_PATH} -type f -name '*.cfg')" -- "$cur")
+        )
+        return
+    fi
+
+    # After the cfg filename, complete RealTimeState names from it
+    cfg="${COMP_WORDS[1]}"
+
+    if [[ -f "$cfg" ]]; then
+        COMPREPLY=(
+            $(compgen -W "$(_find_realtime_states "$cfg")" -- "$cur")
+        )
+    fi
+}
+
+_better_m2_completion() {
+    local cur cfg
+    COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+
+    case "$COMP_CWORD" in
+        1)
+            # cfg filename
+            mapfile -t COMPREPLY < <(
+                compgen -W "$(find "$MARTe2_CONFIG_PATH" -type f -name '*.cfg')" -- "$cur"
+            )
+            ;;
+
+        2)
+            # RealTimeState within selected cfg
+            cfg="${COMP_WORDS[1]}"
+
+            [[ -f "$cfg" ]] || return
+
+            mapfile -t COMPREPLY < <(
+                compgen -W "$(_find_realtime_states "$cfg")" -- "$cur"
+            )
+            ;;
+    esac
+}
+
+_best_m2run_completion() {
+    local cur prev cfg
+    COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    # Assume cfg is first positional argument.
+    cfg="${COMP_WORDS[1]}"
+
+    case "$prev" in
+        -s)
+            [[ -f "$cfg" ]] || return
+
+            mapfile -t COMPREPLY < <(
+                compgen -W "$(_find_realtime_states "$cfg")" -- "$cur"
+            )
+            return
+            ;;
+
+        -m)
+            [[ -f "$cfg" ]] || return
+
+            mapfile -t COMPREPLY < <(
+                compgen -W "$(_find_messages "$cfg")" -- "$cur"
+            )
+            return
+            ;;
+    esac
+
+    # First argument: cfg file
+    if (( COMP_CWORD == 1 )); then
+        mapfile -t COMPREPLY < <(
+            compgen -W "$(find "$MARTe2_CONFIG_PATH" -type f -name '*.cfg')" -- "$cur"
+        )
+        return
+    fi
+
+    # Otherwise offer m2 options
+    COMPREPLY=(
+        $(compgen -W "-s -m" -- "$cur")
+    )
+}
+
+complete -F _best_m2_completion m2
 
 _epicsdbs()
 {
