@@ -31,7 +31,7 @@ export CFG_DIR=${MARTe2_ACTIVE_PROJECT}/Configurations
 
 # If there is no argument, defaults are invoke for the most recent .cfg file and 
 # start with -s Run
-CONFIG=$(find_config "$(basename "$1")")
+CONFIG=$(_find_config "$(basename "$1")")
 #if [ $# -eq 0 ]
 #then
 #    export CONFIG=$(realpath $(ls -1rt ${CFG_DIR}/*.cfg | tail -1))
