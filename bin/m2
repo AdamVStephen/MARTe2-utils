@@ -67,5 +67,5 @@ echo "MARTe2_DIR is ${MARTe2_DIR}"
 echo Running in ${WD} : ./Main.sh -l RealTimeLoader -f "${CONFIG}" "${GOFLAG}" "${GOARG}"
 #cd ${WD} && ./Main.sh -l RealTimeLoader -f "${CONFIG}" -s ${INITIAL_STATE}
 #cd ${WD} && ./Main.sh -l RealTimeLoader -f "${CONFIG}" "${GOFLAG}" "${GOARG}"
-cd ${WD} && ./MARTeApp.sh -l RealTimeLoader -f "${CFG_DIR}/${CONFIG}" "${GOFLAG}" "${GOARG}"
+cd ${WD} && ./MARTeApp.sh -l RealTimeLoader -f "${CONFIG}" "${GOFLAG}" "${GOARG}"
 
