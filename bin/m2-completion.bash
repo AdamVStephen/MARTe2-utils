@@ -132,7 +132,129 @@ _best_m2_completion() {
     )
 }
 
-complete -F _best_m2_completion m2
+_awesome_m2_cfg_completion()
+{
+    local cur rel_dir partial abs_dir
+    local entry name candidate
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+
+    # Split the partially entered path into:
+    #
+    #   Machines/MASTU/PC
+    #
+    # rel_dir = Machines/MASTU/
+    # partial = PC
+
+    if [[ "$cur" == */* ]]; then
+        rel_dir="${cur%/*}/"
+        partial="${cur##*/}"
+    else
+        rel_dir=""
+        partial="$cur"
+    fi
+
+    abs_dir="${MARTe2_CONFIG_PATH}/${rel_dir}"
+
+    [[ -d "$abs_dir" ]] || return
+
+    COMPREPLY=()
+
+    #
+    # Examine immediate children of the current directory.
+    #
+    for entry in "$abs_dir"*; do
+
+        [[ -e "$entry" ]] || continue
+
+        name="${entry##*/}"
+
+        # Respect what the user has typed so far.
+        [[ "$name" == "$partial"* ]] || continue
+
+        if [[ -d "$entry" ]]; then
+
+            # Only expose this directory if there is at least
+            # one .cfg file somewhere beneath it.
+            if find "$entry" -type f -name '*.cfg' -print -quit |
+                    grep -q .; then
+
+                candidate="${rel_dir}${name}/"
+                COMPREPLY+=("$candidate")
+            fi
+
+        elif [[ -f "$entry" && "$name" == *.cfg ]]; then
+
+            candidate="${rel_dir}${name}"
+            COMPREPLY+=("$candidate")
+        fi
+    done
+
+    #
+    # Don't append a space after directory completions.
+    # This lets the next TAB descend naturally into it.
+    #
+    if ((${#COMPREPLY[@]})); then
+        local reply
+
+        for reply in "${COMPREPLY[@]}"; do
+            if [[ "$reply" == */ ]]; then
+                compopt -o nospace
+                break
+            fi
+        done
+    fi
+}
+
+_awesome_m2_completion()
+{
+    local cur prev cfg
+
+    COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    #
+    # First argument: navigate the configuration tree.
+    #
+    if (( COMP_CWORD == 1 )); then
+        _awesome_2_cfg_completion
+        return
+    fi
+
+    #
+    # The first argument is now our selected configuration.
+    #
+    cfg="${MARTe2_CONFIG_PATH}/${COMP_WORDS[1]}"
+
+    case "$prev" in
+
+        -s)
+            [[ -f "$cfg" ]] || return
+
+            mapfile -t COMPREPLY < <(
+                compgen -W "$(_find_realtime_states "$cfg")" -- "$cur"
+            )
+            ;;
+
+        -m)
+            [[ -f "$cfg" ]] || return
+
+            mapfile -t COMPREPLY < <(
+                compgen -W "$(_find_messages "$cfg")" -- "$cur"
+            )
+            ;;
+
+        *)
+            mapfile -t COMPREPLY < <(
+                compgen -W "-s -m" -- "$cur"
+            )
+            ;;
+    esac
+}
+
+complete -F _awesome_m2_completion m2
 
 _epicsdbs()
 {
