@@ -18,7 +18,7 @@ _configs()
 	return 0
 }
 
-for utility in m2 m2less m2chek m2edit m2db m2grep
+for utility in m2 m2check m2db m2edit m2grep m2ioc m2less m2ls m2ps m2states
 do
 	complete -F _configs "${utility}"
 done
