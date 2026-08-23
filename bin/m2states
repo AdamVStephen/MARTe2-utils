@@ -34,9 +34,3 @@ mapfile -t realtime_states < <(find_realtime_states "$config")
 for state in "${realtime_states[@]}"; do
     echo "RealTimeState: $state"
 done
-# Shell array tip for future reference
-grep "${config}"
-
-# Without capturing to local variable
-# This would be equivalent.
-#grep "$@" "${config}"
