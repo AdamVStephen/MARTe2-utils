@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+#
+# MARTe2 utility : use grep to inspect MARTe2 configuration files.
+# - Tab completion searches for candidate configuration files.
+#
+# Issues
+#
+# TODO  Provide a usage() option.
+# WIBNI Add more powerful ways to assist with valid state/message options.
+
+SCRIPT="$0"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# TODO write this
+#SETENV_SCRIPT_PATH="$SCRIPT_DIR/setenv.sh"
+#if [ -f "$SETENV_SCRIPT_PATH" ]
+#then
+#source "$SETENV_SCRIPT_PATH"
+#else
+#	echo "$SETENV_SCRIPT_PATH not found.  Bailing out"
+#	exit 54
+#fi
+
+source "${SCRIPT_DIR}/m2lib"
+
+export WD=${MARTe2_ACTIVE_PROJECT}/Startup
+export CFG_DIR=${MARTe2_ACTIVE_PROJECT}/Configurations
+
+config=$(find_config "$1")
+shift
+
+mapfile -t realtime_states < <(find_realtime_states "$config")
+
+for state in "${realtime_states[@]}"; do
+    echo "RealTimeState: $state"
+done
+# Shell array tip for future reference
+grep "${config}"
+
+# Without capturing to local variable
+# This would be equivalent.
+#grep "$@" "${config}"
