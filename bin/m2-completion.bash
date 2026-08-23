@@ -18,11 +18,14 @@ _configs()
 	return 0
 }
 
-complete -F _configs m2
-complete -F _configs m2less
-complete -F _configs m2check
-complete -F _configs m2edit
-complete -F _configs m2db
+for utility in m2 m2less m2chek m2edit m2db m2grep
+do
+	complete -F _configs "${utility}"
+done
+#complete -F _configs m2less
+#complete -F _configs m2check
+#complete -F _configs m2edit
+#complete -F _configs m2db
 
 _epicsdbs()
 {
