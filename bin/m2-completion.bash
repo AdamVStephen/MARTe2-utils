@@ -219,7 +219,7 @@ _awesome_m2_completion()
     # First argument: navigate the configuration tree.
     #
     if (( COMP_CWORD == 1 )); then
-        _awesome_2_cfg_completion
+        _awesome_m2_cfg_completion
         return
     fi
 
